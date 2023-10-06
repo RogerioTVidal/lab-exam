@@ -1,0 +1,53 @@
+{% extends "bases/base.html" %}
+{% load static %}
+{% block 'head' %}
+{% endblock 'head' %}
+{% block 'content' %}
+<br>
+<br>
+<div class="container">
+<h3 class="font-destaque">Register</h3>
+<div class="row">
+<div class="col-md-3" style="text-align: center">
+<img src="" alt="">
+<h3>LabExams</h3>
+</div>
+<div class="col-md-9">
+<form action="" method="POST">
+<label>Frist name</label>
+<br>
+<input type="text" class="input-default" name="firstName">
+<br>
+<br>
+<label>Last name</label>
+<br>
+<input type="text" class="input-default" name="lastName">
+</div>
+</div>
+<div class="row">
+<div class="col-md-4">
+<label>Username</label>
+<br>
+<input type="text" class="input-default w100" name="userName">
+<br>
+<br>
+<label>Password</label>
+<br>
+<input type="text" class="input-default w100" name="password">
+</div>
+<div class="col-md-4">
+<label>E-mail</label>
+<br>
+<input type="text" class="input-default w100" name="email">
+<br>
+<br>
+<label>Confirm password</label>
+<br>
+<input type="text" class="input-default w100" name="confirmPassword">
+</div>
+</div>
+<br>
+<input type="submit" class="btn-default">
+</form>
+</div>
+{% endblock %}
