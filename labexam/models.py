@@ -16,7 +16,7 @@ class exam_type(models.Model):
     initial_hour = models.IntegerField()
     final_hour = models.IntegerField()
 def __str__(self):
-    return self.name
+    return f'{self.name}'
 
 class exam_request(models.Model):
     status_choices = (
@@ -30,7 +30,7 @@ class exam_request(models.Model):
     password_required = models.BooleanField(default=False)
     password = models.CharField(max_length=6, null=True, blank=True)
 def __str__(self):
-    return f'{self.user} | {self.exam.name}'
+    return f'{self.user} | {self.exam_type.name}'
 
 class exam_order(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
