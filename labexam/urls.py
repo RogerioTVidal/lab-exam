@@ -7,4 +7,5 @@ from . import views
 urlpatterns = [
     path('request-exam/', views.fRequestExams, name='request'),
     path('order-exam/', views.fOrderExams, name='order'),
+    path('close-request/', views.fCloseRequest, name="closeRequest"),
 ]

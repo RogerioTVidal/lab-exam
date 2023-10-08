@@ -28,23 +28,37 @@
             <div class="col-md-2">
             </div>
             <div class="col-md card">
-                <div style="font-size: 20px; font-weight: bold">
-                    <img src="{% static 'exams/img/check.png' %}">
-                    Exam 1
-                    <span class="price-preview">
-                        $ 30
-                    </span>
-                </div>
-                <hr style="color: white;">
-                <div>
-                    <label>Total: </label><label class="price-preview">$ 30</label>
-                </div>
-                <br>
-                <h5>Date: September, 8</h5>
-                <br>
-                <form action="" method="POST">
-                    <button class="btn-secundary">Done</button>
-                </form>
+                {% if requested_exams %}
+                    {% for exam in requested_exams %}
+                        <div style="font-size: 20px; font-weight: bold">
+                            {% if exam.avaliable %}
+                                <img src="{% static 'labexam/img/check.png' %}">
+                            {% else %}
+                                <img src="{% static 'labexam/img/exit.png' %}">
+                            {% endif %}
+                            {{exam.name}}
+                            <span class="price-preview">
+                                {{exam.price}}
+                            </span>
+                        </div>
+                    {% endfor %}
+                    <hr style="color: white;">
+                    <div>
+                        <label>Total: </label><label class="price-preview">{{total}}</label>
+                    </div>
+                    <br>
+                    PSW 8.0 | Aula 2 4
+                    <h5>Data: 08 de Setembro</h5>
+                    <br>
+                    <form action="{% url 'closeRequest' %}" method="POST"> {% csrf_token %}
+                        {% for exam in requested_exams %}
+                            <input type="hidden" value="{{exam.id}}" name="examsHidden">
+                        {% endfor %}
+                        <button class="btn-secundary">Close request</button>
+                    </form>
+                {% else %}
+                    <h3>Exam not selected</h3>
+                {% endif %}            
             </div>
         </div>
     </div>
