@@ -8,6 +8,9 @@ from .models import exam_type, exam_order, exam_request
 from datetime import datetime
 
 
+# request -  Solicitação de exames
+# order - Pedido de exames
+
 @login_required
 def fRequestExams(request):
     typeExam = exam_type.objects.all().order_by('name').values()
@@ -22,11 +25,16 @@ def fRequestExams(request):
         return render(request, 'request-exam.html', {'typeExam': typeExam})
     elif request.method == 'POST':
         exam_ids = request.POST.getlist('exams')
-        requested_exams = exam_type.objects.filter(id__in=exam_ids)
+        requested_exams = exam_type.objects.filter(id__in=exam_ids).order_by('name')
+
         #preco_total = solicitacao_exames.aggregate(total=Sum('preco'))['total']
+
         total = 0
+
         for exam in requested_exams:
-            total += exam.price
+            if exam.avaliable:
+                total += exam.price
+
         return render(request, 'request-exam.html', {'requested_exams': requested_exams, 'total': total, 'typeExam': typeExam})
 
 @login_required
@@ -39,8 +47,8 @@ def fOrderExams(request):
 
 @login_required
 def fCloseRequest(request):
-    exam_ids = request.POST.getlist('examsHidden')
-    exam_type = exam_type.objects.filter(id__in=exam_ids)
+    exams_ids = request.POST.getlist('examsHidden')
+    exams_type = exam_type.objects.filter(id__in=exams_ids)
 
     exam_order_temp = exam_order(
         user = request.user,
@@ -49,18 +57,18 @@ def fCloseRequest(request):
 
     exam_order_temp.save()
 
-    for examTemp in exam_type:
+    for examTemp in exams_type:
+        #print(examTemp.id)
         exam_request_temp = exam_request(
             user=request.user,
             exam=examTemp,
             status="R"
         )
-
+  
         exam_request_temp.save()
-
         exam_order_temp.exam.add(exam_request_temp)
 
     exam_order_temp.save()
 
     messages.add_message(request, constants.SUCCESS, 'Exams added successfuly')
-    return redirect('/exams/ver_pedidos/')
+    return redirect('/exam/ver_pedidos/')

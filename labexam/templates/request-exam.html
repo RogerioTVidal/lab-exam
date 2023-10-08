@@ -42,12 +42,12 @@
                             </span>
                         </div>
                     {% endfor %}
+
                     <hr style="color: white;">
                     <div>
                         <label>Total: </label><label class="price-preview">{{total}}</label>
                     </div>
                     <br>
-                    PSW 8.0 | Aula 2 4
                     <h5>Data: 08 de Setembro</h5>
                     <br>
                     <form action="{% url 'closeRequest' %}" method="POST"> {% csrf_token %}
@@ -57,7 +57,7 @@
                         <button class="btn-secundary">Close request</button>
                     </form>
                 {% else %}
-                    <h3>Exam not selected</h3>
+                    <h5>Exam not selected</h5>
                 {% endif %}            
             </div>
         </div>
