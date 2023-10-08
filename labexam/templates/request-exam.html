@@ -14,7 +14,7 @@
             <div class="col-md">
                 <h3 class="font-contrast-primary">Request exams</h3>
                 <!--<form action="" method="POST"> -->
-                <form action="{% url 'request-exam' %}" method="POST"> {% csrf_token %}
+                <form action="{% url 'request' %}" method="POST"> {% csrf_token %}
                 <label for="">Select exams</label>
                     <select class="select form-control bg-select" multiple name="exams">
                         {% for exam in typeExam %}
