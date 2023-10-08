@@ -23,10 +23,10 @@ def fRegister(request):
 
         if not password == confirmPassword:
             messages.add_message(request, constants.ERROR, 'Password and confirmation are not equal.')
-            return redirect('/users/register')
+            return redirect('/user/register')
         if len(password) < 6:
             messages.add_message(request, constants.ERROR, 'Password must have more than 5 characters.')
-            return redirect('/users/register')
+            return redirect('/user/register')
         
         try:
             # Username must be unique!
@@ -40,7 +40,7 @@ def fRegister(request):
             messages.add_message(request, constants.SUCCESS, 'Data saved successfuly')
         except:
             messages.add_message(request, constants.ERROR, 'Internal error. Please contact admin.')
-            return redirect('/users/register')
+            return redirect('/user/register')
 
         return HttpResponse('Passou')
     
@@ -59,4 +59,4 @@ def fLogin(request):
         return redirect('/')
     else:
         messages.add_message(request, constants.ERROR, 'Invalid user or password')
-        return redirect('/users/login')
+        return redirect('/user/login')

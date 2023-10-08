@@ -1,0 +1,39 @@
+body{
+    background-image: url('/static/general/img/bg2.png');
+    background-size: cover;
+}
+
+.bg-select{
+    background-color: transparent;
+    border-color: var(--differential-color);
+}
+
+.card{
+    background-color: rgba(217, 217, 217, .14);
+    color: white;
+    padding: 15px;
+}
+
+.price-preview{
+    float: right;
+    font-weight: bold;
+}
+
+.size-2{
+    width: 50%;
+}
+
+.btn-secundary{
+    background-color: #838FFF;
+    color: rgb(10, 8, 8);
+    padding: 10px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+}
+
+.btn-secundary-outline{
+    background-color: transparent;
+    border-color: #838FFF;
+    padding: 10px;
+}

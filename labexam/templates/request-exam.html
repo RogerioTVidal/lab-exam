@@ -1,0 +1,50 @@
+{% extends "bases/base.html" %}
+
+{% load static %}
+
+{% block 'head' %}
+    <link href="{% static 'labexam/css/css.css' %}" rel="stylesheet">
+{% endblock 'head' %}
+
+{% block 'content' %}
+    <br>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md">
+                <h3 class="font-contrast-primary">Request exams</h3>
+                <form action="{% url "request-exam" %}" method="POST">{% csrf_token %}
+                    <label for="">Select exams to do</label>
+                    <select class="select form-control bg-select" multiple name="exams">
+                        {% for exam in typeExam %}
+                            <option class="opt" value="{{exam.id}}">{{exam.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <input type="submit" class="btn-default size-2" name="last_name" value="Request Exam">
+                </form>
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md card">
+                <div style="font-size: 20px; font-weight: bold">
+                    <img src="{% static 'exams/img/check.png' %}">
+                    Exam 1
+                    <span class="price-preview">
+                        $ 30
+                    </span>
+                </div>
+                <hr style="color: white;">
+                <div>
+                    <label>Total: </label><label class="price-preview">$ 30</label>
+                </div>
+                <br>
+                <h5>Date: September, 8</h5>
+                <br>
+                <form action="" method="POST">
+                    <button class="btn-secundary">Done</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock 'content' %}
