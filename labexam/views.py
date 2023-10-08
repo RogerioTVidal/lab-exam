@@ -10,6 +10,10 @@ from .models import exam_type
 @login_required
 def fRequestExams(request):
     typeExam = exam_type.objects.all()
+##  for i in typeExam:
+##      print(i.name)
+##      print(i.price)
+##      print('-' * 10)
 
     if request.method == 'GET':
         #return HttpResponse('Exams GET')

@@ -13,8 +13,9 @@
         <div class="row">
             <div class="col-md">
                 <h3 class="font-contrast-primary">Request exams</h3>
-                <form action="{% url "request-exam" %}" method="POST">{% csrf_token %}
-                    <label for="">Select exams to do</label>
+                <!--<form action="" method="POST"> -->
+                <form action="{% url 'request-exam' %}" method="POST"> {% csrf_token %}
+                <label for="">Select exams</label>
                     <select class="select form-control bg-select" multiple name="exams">
                         {% for exam in typeExam %}
                             <option class="opt" value="{{exam.id}}">{{exam.name}}</option>
