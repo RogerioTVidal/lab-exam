@@ -38,14 +38,6 @@ def fRequestExams(request):
         return render(request, 'request-exam.html', {'requested_exams': requested_exams, 'total': total, 'typeExam': typeExam})
 
 @login_required
-def fOrderExams(request):
-    if request.method == 'GET':
-        #return HttpResponse('Order GET')
-        return render(request, 'order-exam.html')
-    elif request.method == 'POST':
-        return HttpResponse('Order POST')
-
-@login_required
 def fCloseRequest(request):
     exams_ids = request.POST.getlist('examsHidden')
     exams_type = exam_type.objects.filter(id__in=exams_ids)
@@ -70,5 +62,29 @@ def fCloseRequest(request):
 
     exam_order_temp.save()
 
-    messages.add_message(request, constants.SUCCESS, 'Exams added successfuly')
-    return redirect('/exam/ver_pedidos/')
+    messages.add_message(request, constants.SUCCESS, 'Exams added successfuly.')
+    return redirect('/exam/order-management/')
+
+
+@login_required
+def fOrderManagement(request):
+    if request.method == 'GET':
+        exam_order_temp = exam_order.objects.filter(user=request.user)
+        #return HttpResponse('Entrou')
+        return render(request, 'order-management.html', {'ordered_exams': exam_order_temp})
+
+
+@login_required
+def fOrderCancel(request, order_id):
+    exam_order_temp = exam_order.objects.get(id=order_id)
+    if not exam_order_temp.user == request.user:
+        messages.add_message(request, constants.ERROR, 'Not your order.')
+        return redirect('/exam/order-management/')    
+    
+    exam_order_temp.scheduled = False
+    exam_order_temp.save()
+
+    #return HttpResponse('Entrou')
+    messages.add_message(request, constants.SUCCESS, 'Exams canceled successfuly.')
+
+    return redirect('/exam/order-management/')

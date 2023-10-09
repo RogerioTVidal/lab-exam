@@ -1,0 +1,48 @@
+{% extends "bases/base.html" %}
+
+{% load static %}
+
+{% block 'head' %}
+    <link href="{% static 'labexam/css/css.css' %}" rel="stylesheet">
+    <link href="{% static 'labexam/css/order-management.css' %}" rel="stylesheet">
+{% endblock 'head' %}
+
+{% block 'content' %}
+    <br>
+    <br>
+    <div class="container">
+        {% if messages %}
+            <br>
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="card card-view">
+            <table>
+                <tr>
+                    <th>Order</th>
+                    <th>Date</th>
+                    <th>Exams</th>
+                    <th>Action</th>
+                </tr>
+                {% for ordered in ordered_exams %}
+                    <tr class="table-row">
+                        <td>{{ordered.id}}</td>
+                        <td>{{ordered.date}}</td>
+                        <td>
+                            <select class="form-select">
+                                {% for examT in ordered.exam.all %}
+                                    <option style="color: black" value="">{{examT.exam.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <a href="{% url 'orderCancel' ordered.id %}" class="btn btn-danger {% if not ordered.scheduled %} disabled {% endif %}">Cancel</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock 'content' %}

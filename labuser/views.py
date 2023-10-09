@@ -55,7 +55,6 @@ def fLogin(request):
     
     if user:
         login(request, user)
-        # Acontecerá um erro ao redirecionar por enquanto, resolveremos nos próximos passos
         return redirect('/')
     else:
         messages.add_message(request, constants.ERROR, 'Invalid user or password')
