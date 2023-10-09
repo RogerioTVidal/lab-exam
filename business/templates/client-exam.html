@@ -38,11 +38,11 @@
                 <h3>Status</h3>
 
                 <select name="status" id="" class="form-select">
-                    <option style="color: black;" value="R">Review</option>
-                    <option style="color: black;" value="F">Finished</option>
+                    <option style="color: black;" {% if exam.status == "R" %}selected{%endif%} value="R">Review</option>
+                    <option style="color: black;" {% if exam.status == "F" %}selected{%endif%} value="F">Finished</option>
                 </select>
                 <br>
-                <input type="checkbox" name="passwordRequired" id=""><label for="">Password required ?</label>
+                <input type="checkbox" name="passwordRequired" {% if exam.password_required %}checked{%endif%} id=""><label for="">Password required ?</label>
                 <br>
                 <br>
 
