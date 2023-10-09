@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import constants
 from django.contrib import messages
-from .models import exam_type, exam_order, exam_request
+from .models import exam_type, exam_order, exam_request, doctor_access
 from datetime import datetime
 
 
@@ -88,3 +88,68 @@ def fOrderCancel(request, order_id):
     messages.add_message(request, constants.SUCCESS, 'Exams canceled successfuly.')
 
     return redirect('/exam/order-management/')
+
+@login_required
+def fExamManagement(request):
+    exam_request_temp = exam_request.objects.filter(user=request.user)
+    return render(request, 'exam-management.html', {'exam_request': exam_request_temp})
+
+@login_required
+def fOpenExam(request, exam_id):
+    exam_request_temp = exam_request.objects.get(id=exam_id)
+    #return HttpResponse(exam_id)
+    if not exam_request_temp.user == request.user:
+        messages.add_message(request, constants.ERROR, 'Not your exam.')
+        return redirect('/exam/exam-management/')    
+  
+    if not exam_request_temp.password_required:
+        # verificar se o pdf existe
+        return redirect(exam_request_temp.result.url)
+    else:
+        return redirect(f'/exam/require-password/{exam_id}')
+    
+@login_required
+def fRequirePassword(request, exam_id):
+    #return HttpResponse(exam_id)
+    exam_request_temp = exam_request.objects.get(id=exam_id)
+
+    if request.method == "GET":
+        return render(request, 'require-password.html', {'exam_request': exam_request_temp})
+    elif request.method == "POST":
+        if not exam_request_temp.user == request.user:
+            messages.add_message(request, constants.ERROR, 'Not your exam.')
+            return redirect('/exam/exam-management/')    
+    
+        pwd = request.POST.get('password')
+        if pwd == exam_request_temp.password:
+            return redirect(exam_request_temp.result.url)
+        else:
+            messages.add_message(request, constants.ERROR, 'Invalid password')
+            return redirect(f'/exam/require-password/{exam_id}')
+        
+
+@login_required
+def fCreateDoctorAccess(request):
+    if request.method == "GET":
+        doctor_access = doctor_access.objects.filter(user =request.user)
+        return render(request, 'create-doctor-access.html', {'doctor_access': doctor_access})
+    elif request.method == "POST":
+        identification_temp = request.POST.get('identification')
+        access_time_temp = request.POST.get('access_time')
+        inicial_exam_date_temp = request.POST.get("inicial_exam_date")
+        final_exam_date_temp = request.POST.get("final_exam_date")
+
+        doctor_access_temp = doctor_access(
+            user = request.user,
+            identification = identification_temp,
+            access_time = access_time_temp,
+            inicial_exam_date = inicial_exam_date_temp,
+            final_exam_date = final_exam_date_temp,
+            created = datetime.now()
+            token = 'ABCDEF'
+        )
+
+        doctor_access_temp.save()
+
+        messages.add_message(request, constants.SUCCESS, 'Access created successfuly')
+        return redirect('/exames/gerar_acesso_medico')    

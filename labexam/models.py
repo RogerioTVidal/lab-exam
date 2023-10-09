@@ -1,8 +1,9 @@
-from django.db import models
-
 # Create your models here.
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
+from secrets import token_urlsafe
+
 
 class exam_type(models.Model):
     type_choices = (
@@ -18,6 +19,7 @@ class exam_type(models.Model):
 def __str__(self):
     return f'{self.name}'
 
+
 class exam_request(models.Model):
     status_choices = (
         ('R', 'Review'),
@@ -31,6 +33,17 @@ class exam_request(models.Model):
     password = models.CharField(max_length=6, null=True, blank=True)
 def __str__(self):
     return f'{self.user} | {self.exam_type.name}'
+def badge_template(self):
+    if self.status == "R":
+        classe = 'bg-warning text-dark'
+        text = 'Review'
+    if self.status == "F":
+        classe = 'bg-success'
+        text = 'Finished'
+
+    return mark_safe(f'<span class="badge {classe}">{text}</span>')
+
+
 
 class exam_order(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
@@ -39,3 +52,22 @@ class exam_order(models.Model):
     date = models.DateField()
 def __str__(self):
     return f'{self.user} | {self.date}'
+
+
+class doctor_access(models.Model):
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    identification = models.CharField(max_length=50)
+    access_time = models.IntegerField() # Em horas
+    created = models.DateTimeField()
+    inicial_exam_date = models.DateField()
+    final_exam_date = models.DateField()
+    token = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.token
+    
+    def save(self, *args, **kwargs):
+        if not self.token:
+            self.token = token_urlsafe(6)
+
+        super(doctor_access, self).save(*args, **kwargs)
