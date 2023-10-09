@@ -5,6 +5,7 @@ from django.db.models.functions import Concat
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import exam_request
 from django.http import FileResponse
+from utils import fCreatePdfExam
 
 
 @staff_member_required 
@@ -43,3 +44,17 @@ def fProxyPdf(request, exam_id):
 
     response = exam_temp.result.open()
     return FileResponse(response)
+
+
+@staff_member_required 
+def fGeneratePassword(request, exam_id):
+    exam_temp = exam_request.objects.get(id=exam_id)
+
+    if exam_temp.senha:
+        # Baixar o documento da senha já existente
+        return FileResponse(fCreatePdfExam(exam_temp.exam.name, exam_temp.user, exam_temp.password), filename="token.pdf")
+    
+    pwd = fGeneratePassword(9)
+    exam_temp.password = pwd
+    exam_temp.save()
+    return FileResponse(fCreatePdfExam(exam_temp.exam.name, exam_temp.user, exam_temp.password), filename="token.pdf")
