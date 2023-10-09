@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from secrets import token_urlsafe
+from django.utils import timezone
+from datetime import timedelta
 
 
 class exam_type(models.Model):
@@ -71,3 +73,12 @@ class doctor_access(models.Model):
             self.token = token_urlsafe(6)
 
         super(doctor_access, self).save(*args, **kwargs)
+    
+    @property
+    def status(self):
+        return 'Expired' if timezone.now() > (self.created + timedelta(hours=self.access_time)) else 'Active'
+  
+    @property
+    def url(self):
+        #TODO: reverse
+        return f"http://127.0.0.1:8000/exam/doctor-access/{self.token}"

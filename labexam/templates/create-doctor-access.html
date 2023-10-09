@@ -19,7 +19,7 @@
         {% endif %}
         <div class="row">
             <div class="col-md-5">
-                <h3>Create doctor access</h3>
+                <h4>Create doctor access</h4>
 
                 <form action="{% url "createDoctorAccess" %}" method="POST"> {% csrf_token %}
 
@@ -34,7 +34,7 @@
                     <br>
                     <br>
                     <div class="row">
-                        <label for="">Date valid interval:</label>
+                        <label for="">Exams between:</label>
                         <div class="col-md">
                             <input style="width: 100%" type="date" name="inicial_exam_date" id="" class="input-default">
                         </div>
@@ -59,16 +59,13 @@
                           <th>Link</th>
                           
                         </tr>
-        
-                       
+                        {% for acess in doctor_access %}
                             <tr class="table-row">
-                                <td>01</td>
-                                <td>Status 1</td>
-                                <td>URL AQUI</td>
+                                <td>{{acess.identification}}</td>
+                                <td>Active</td>
+                                <td><a href="http://127.0.0.1:8000/exam/doctor-access/{{acess.token}}">http://127.0.0.1:8000/exam/doctor-access/{{acess.token}}</a></td>
                             </tr>
-                      
-                    
-                       
+                        {% endfor %}                      
                     </table>
                 </div>
 

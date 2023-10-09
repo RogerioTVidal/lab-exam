@@ -6,6 +6,9 @@ from django.contrib.messages import constants
 from django.contrib import messages
 from .models import exam_type, exam_order, exam_request, doctor_access
 from datetime import datetime
+from secrets import token_urlsafe
+from django.utils import timezone
+from datetime import timedelta
 
 
 # request -  Solicitação de exames
@@ -65,14 +68,12 @@ def fCloseRequest(request):
     messages.add_message(request, constants.SUCCESS, 'Exams added successfuly.')
     return redirect('/exam/order-management/')
 
-
 @login_required
 def fOrderManagement(request):
     if request.method == 'GET':
         exam_order_temp = exam_order.objects.filter(user=request.user)
         #return HttpResponse('Entrou')
         return render(request, 'order-management.html', {'ordered_exams': exam_order_temp})
-
 
 @login_required
 def fOrderCancel(request, order_id):
@@ -126,13 +127,12 @@ def fRequirePassword(request, exam_id):
         else:
             messages.add_message(request, constants.ERROR, 'Invalid password')
             return redirect(f'/exam/require-password/{exam_id}')
-        
 
 @login_required
 def fCreateDoctorAccess(request):
     if request.method == "GET":
-        doctor_access = doctor_access.objects.filter(user =request.user)
-        return render(request, 'create-doctor-access.html', {'doctor_access': doctor_access})
+        doctor_access_temp = doctor_access.objects.filter(user=request.user)
+        return render(request, 'create-doctor-access.html', {'doctor_access': doctor_access_temp})
     elif request.method == "POST":
         identification_temp = request.POST.get('identification')
         access_time_temp = request.POST.get('access_time')
@@ -145,11 +145,27 @@ def fCreateDoctorAccess(request):
             access_time = access_time_temp,
             inicial_exam_date = inicial_exam_date_temp,
             final_exam_date = final_exam_date_temp,
-            created = datetime.now()
-            token = 'ABCDEF'
+            created = datetime.now(),
+            token = token_urlsafe(6)
         )
 
         doctor_access_temp.save()
 
         messages.add_message(request, constants.SUCCESS, 'Access created successfuly')
-        return redirect('/exames/gerar_acesso_medico')    
+        return redirect('/exam/create-doctor-access')    
+    
+
+def fDoctorAccess(request, token):
+    doctor_access_temp = doctor_access.objects.get(token=token)
+    Expired = False
+
+    if timezone.now() > (doctor_access_temp.created + timedelta(hours=doctor_access_temp.access_time)):
+        Expired = True
+        
+    if Expired:
+        messages.add_message(request, constants.ERROR, 'Link expired!')
+        return redirect('/user/login')
+
+    order_temp = exam_order.objects.filter(date__gte = doctor_access_temp.inicial_exam_date).filter(date__lte = doctor_access_temp.final_exam_date).filter(user=doctor_access_temp.user)
+
+    return render(request, 'doctor-access.html', {'orders': order_temp})

@@ -1,0 +1,38 @@
+{% extends "bases/base.html" %}
+
+{% load static %}
+
+{% block 'head' %}
+    <link href="{% static 'labexam/css/css.css' %}" rel="stylesheet">
+    <link href="{% static 'labexam/css/order-management.css' %}" rel="stylesheet">
+{% endblock 'head' %}
+
+
+{% block 'content' %}
+    <br>
+    <br>
+    <div class="container">
+
+        
+        <table style="">
+            <tr>
+              <th>Id</th>
+              <th>Exam</th>
+              
+                {% for order in orders %}
+                    {% for exam in order.exam.all %}
+                        <tr class="table-row">
+                            <td>{{exam.exam.name}}</td>
+                            
+                            {% if exam.result %}
+                                <td><a style="text-decoration: none;" class="btn-secundario" href="{{exam.result.url}}">View exam</a></td>
+                            {% else %}
+                                <td>Review</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                {% endfor %}  
+            </tr>         
+        </table>
+    </div>
+{% endblock 'content' %}

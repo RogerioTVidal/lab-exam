@@ -13,4 +13,5 @@ urlpatterns = [
     path('open-exame/<int:exam_id>', views.fOpenExam, name="openExam"),
     path('require-password/<int:exam_id>', views.fRequirePassword, name="requirePassword"),
     path('create-doctor-access/', views.fCreateDoctorAccess, name="createDoctorAccess"),
+    path('doctor-access/<str:token>', views.fDoctorAccess, name="doctorAccess"),
 ]
