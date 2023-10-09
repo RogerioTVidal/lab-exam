@@ -12,4 +12,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('labuser.urls')),
     path('exam/', include('labexam.urls')),
+    path('business/', include('business.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

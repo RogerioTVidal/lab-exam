@@ -1,0 +1,77 @@
+{% extends "bases/base.html" %}
+
+{% load static %}
+
+{% block 'head' %}
+<link href="{% static 'labexam/css/css.css' %}" rel="stylesheet">
+<link href="{% static 'labexam/css/order-management.css' %}" rel="stylesheet">
+<link href="{% static 'labexam/css/exam-management.css' %}" rel="stylesheet">
+{% endblock 'head' %}
+
+
+{% block 'content' %}
+    <br>
+    <div class="container">
+        {% if messages %}
+            <br>
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row">
+        <h3 class="font-contrast-primary">{{exam.user.get_full_name}}</h3>
+        <p>{{exam.user.email}}</p>
+        <br>
+        <div class="row">
+            <div class="col-md-6">
+                <form action="" method="POST">
+                    <input type="FILE" value="Change PDF" class="btn-secundary" name="result">
+               
+                    <br>
+                    <br>
+                    {% if exam.result %}
+                        <a style="width: 100%;" href="" target="__blank"><div  style="width: 100%;" id="pdf-container">Click here</div></a>
+                    {% endif %}
+            </div>
+            <div class="col-md-6">
+                <h3>Status</h3>
+
+                <select name="status" id="" class="form-select">
+                    <option style="color: black;" value="R">Review</option>
+                    <option style="color: black;" value="F">Finished</option>
+                </select>
+                <br>
+                <input type="checkbox" name="passwordRequired" id=""><label for="">Password required ?</label>
+                <br>
+                <br>
+
+                <input type="submit" value="Save" class="btn-default">
+                </form>
+                <a style="text-decoration: none;" href="" class="btn-secundary">Gerar senha</a>
+            </div>
+        </div>
+        
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script>
+    
+        const container = document.getElementById('pdf-container');
+    
+        pdfjsLib.getDocument('').promise.then(pdf => {
+            pdf.getPage(1).then(page => {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                const viewport = page.getViewport({ scale: 0.6 });
+    
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+    
+                page.render({ canvasContext: context, viewport }).promise.then(() => {
+                    container.appendChild(canvas);
+                });
+            });
+        });
+    </script>
+{% endblock 'content' %}
